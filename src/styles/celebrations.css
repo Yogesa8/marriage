@@ -1,0 +1,514 @@
+/* ===== 4 · Celebrations: engagement ← line → wedding, driven by scroll while the section is pinned ===== */
+.cel {
+  /* one screen to pin + the scroll distance that plays the three steps */
+  height: calc(100vh + 170vh);
+  height: calc(100svh + 170svh);
+  padding: 0
+}
+
+/* the section itself has no background: it is on the pinned stage below,
+   so the paper stays still while scrolling and only the content reveals */
+.cel.s-pearl {
+  background: none
+}
+
+.cel.s-pearl::before {
+  content: none
+}
+
+.cel__stage {
+  background: #f4e9e1 url(/assets/media/emboss.jpg) center/640px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(56px + env(safe-area-inset-top)) 0 40px
+}
+
+/* the same soft pearl wash as the other light sections */
+.cel__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(247, 238, 230, .74);
+  pointer-events: none
+}
+
+.cel__stage .wrap {
+  width: 100%
+}
+
+.cel__row {
+  --gap: clamp(40px, 12vw, 72px);
+  --head: 92px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--gap);
+  margin-top: 40px
+}
+
+/* ----- a column (one day) ----- */
+.cel__col {
+  position: relative;
+  min-width: 0;
+  opacity: 0;
+  transition: opacity .9s ease, transform 1.1s var(--ease)
+}
+
+.cel__col--l {
+  text-align: right;
+  transform: translateX(-22px)
+}
+
+.cel__col--r {
+  text-align: left;
+  transform: translateX(22px)
+}
+
+.cel__col.is-in {
+  opacity: 1;
+  transform: none
+}
+
+.cel__head {
+  height: var(--head)
+}
+
+/* the day's name writes itself in, like the section titles */
+.cel__name {
+  margin: 0;
+  font: 400 clamp(36px, 10.5vw, 46px)/1 var(--script);
+  color: var(--ruby);
+  white-space: nowrap;
+  clip-path: inset(-30% 100% -50% 0);
+  transition: clip-path 1.6s cubic-bezier(.45, .05, .3, 1) .15s
+}
+
+.cel__col--l .cel__name {
+  clip-path: inset(-30% 0 -50% 100%)
+}
+
+.cel__col.is-in .cel__name {
+  clip-path: inset(-30% -10% -50% -10%)
+}
+
+.cel__date {
+  margin-top: 8px;
+  font: 400 12.5px/1 var(--disp);
+  letter-spacing: .14em;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity .8s ease .6s
+}
+
+.cel__date span {
+  display: block;
+  margin-bottom: 5px;
+  font: italic 400 15px/1 var(--serif);
+  letter-spacing: 0;
+  opacity: .7
+}
+
+.cel__col.is-in .cel__date {
+  opacity: 1
+}
+
+/* ----- the gold thread on the inner edge of each column ----- */
+.cel__tl {
+  position: relative;
+  --pl: 0
+}
+
+.cel__line {
+  position: absolute;
+  top: 0;
+  bottom: 8px;
+  width: 1px;
+  background: rgba(59, 7, 16, .15)
+}
+
+.cel__col--l .cel__line {
+  right: 0
+}
+
+.cel__col--r .cel__line {
+  left: 0
+}
+
+.cel__line i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--gold), var(--ruby));
+  transform-origin: top;
+  transform: scaleY(var(--pl))
+}
+
+.cel__tl ol {
+  margin: 0;
+  padding: 0;
+  list-style: none
+}
+
+.cel__tl li {
+  padding: 16px 0 14px
+}
+
+.cel__col--l li {
+  padding-right: 16px
+}
+
+.cel__col--r li {
+  padding-left: 16px
+}
+
+/* a small bead on the thread for every moment */
+.cel__tl li {
+  position: relative
+}
+
+.cel__tl li::before {
+  content: "";
+  position: absolute;
+  top: 30px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f4e9e1;
+  border: 1px solid rgba(143, 20, 38, .35);
+  transition: background .5s, border-color .5s, transform .6s var(--spring)
+}
+
+.cel__col--l li::before {
+  right: -3px
+}
+
+.cel__col--r li::before {
+  left: -3px
+}
+
+.cel__tl li.is-lit::before {
+  background: var(--gold);
+  border-color: var(--gold);
+  transform: scale(1.25)
+}
+
+.cel__tx {
+  opacity: .28;
+  transition: opacity .6s, transform .8s var(--ease)
+}
+
+.cel__col--l .cel__tx {
+  transform: translateX(-8px)
+}
+
+.cel__col--r .cel__tx {
+  transform: translateX(8px)
+}
+
+.cel__tl li.is-lit .cel__tx {
+  opacity: 1;
+  transform: none
+}
+
+.cel__tx b {
+  display: block;
+  font: 400 32px/.95 var(--script);
+  font-weight: 400
+}
+
+.cel__tx time {
+  display: block;
+  margin-top: 6px;
+  font: 400 17px/1.2 var(--disp);
+  letter-spacing: .06em;
+  color: var(--ruby)
+}
+
+.cel__tx span {
+  display: block;
+  margin-top: 5px;
+  font: 400 15.5px/1.4 var(--serif)
+}
+
+/* very narrow phones (320–359px): slightly smaller text so names and times stay on one line */
+@media (max-width: 359px) {
+  .cel__row {
+    --gap: 30px
+  }
+
+  .cel__tx b {
+    font-size: 27px
+  }
+
+  .cel__tx time {
+    font-size: 15px;
+    letter-spacing: .03em
+  }
+
+  .cel__tx span {
+    font-size: 14.5px
+  }
+}
+
+/* phone in landscape: everything has to fit in ~390px of height */
+@media (max-height: 500px) and (orientation: landscape) {
+  .cel__stage {
+    padding: calc(10px + env(safe-area-inset-top)) 0 8px
+  }
+
+  .cel__stage .t {
+    font-size: 44px
+  }
+
+  .cel__stage .sub {
+    margin-top: 2px;
+    font-size: 15px
+  }
+
+  .cel__row {
+    --head: 58px;
+    margin-top: 10px
+  }
+
+  .cel__name {
+    font-size: 32px
+  }
+
+  .cel__date {
+    margin-top: 4px;
+    font-size: 11px
+  }
+
+  .cel__date span {
+    display: inline;
+    margin: 0 6px 0 0;
+    font-size: 13px
+  }
+
+  .cel__tl li {
+    padding: 6px 0 4px
+  }
+
+  /* a little more room so the script letters' swashes never touch the beads */
+  .cel__col--l li {
+    padding-right: 24px
+  }
+
+  .cel__col--r li {
+    padding-left: 24px
+  }
+
+  .cel__tl li::before {
+    top: 16px
+  }
+
+  .cel__tx b {
+    font-size: 24px
+  }
+
+  .cel__tx time {
+    margin-top: 2px;
+    font-size: 14px
+  }
+
+  .cel__tx span {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 1.3
+  }
+}
+
+/* reduced motion: no pinning, everything shown */
+.cel.is-still {
+  height: auto;
+  padding: 104px 0 112px
+}
+
+.cel.is-still .cel__stage {
+  position: relative;
+  height: auto;
+  padding: 0
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+  .cel__col,
+  .cel__name,
+  .cel__date,
+  .cel__tx {
+    transition: none
+  }
+}
+
+/* ===== 5 · Where: reveal the two celebration locations in sequence ===== */
+.where {
+  height: calc(100vh + 140vh);
+  height: calc(100svh + 140svh);
+  padding: 0
+}
+
+.where__stage {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: calc(56px + env(safe-area-inset-top)) 0 40px
+}
+
+.where__wrap {
+  width: 100%;
+  max-width: min(980px, 100%)
+}
+
+.where__row {
+  --gap: clamp(12px, 4vw, 40px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--gap);
+  margin-top: clamp(12px, 3vh, 26px)
+}
+
+.where__place {
+  min-width: 0;
+  opacity: 0;
+  transition: opacity .9s ease, transform 1.1s var(--ease)
+}
+
+.where__place--l {
+  transform: translateX(-22px)
+}
+
+.where__place--r {
+  transform: translateX(22px)
+}
+
+.where__place.is-in {
+  opacity: 1;
+  transform: none
+}
+
+.where__occasion {
+  margin: 0 0 4px;
+  font: 400 clamp(30px, 5vw, 42px)/1 var(--script);
+  color: var(--gold2)
+}
+
+.where__figure {
+  position: relative;
+  width: min(315px, calc(100% - 12px));
+  aspect-ratio: 3/4;
+  margin: 0 auto 12px
+}
+
+.where__figure-in {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px 999px 4px 4px;
+  overflow: hidden
+}
+
+.where__figure img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.14);
+  transition: transform 2.6s var(--ease)
+}
+
+.where__place.is-in .where__figure img {
+  transform: scale(1)
+}
+
+.where__figure::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 1px solid rgba(217, 180, 124, .6);
+  border-radius: 999px 999px 8px 8px
+}
+
+.where__name {
+  margin: 0;
+  font: 400 clamp(17px, 2.6vw, 26px)/1.15 var(--disp);
+  letter-spacing: .03em;
+  color: var(--gold2)
+}
+
+.where__route {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 8px;
+  padding: 0 12px;
+  gap: 8px;
+  font-size: clamp(9px, 1.3vw, 12px);
+  letter-spacing: .05em
+}
+
+.where__route-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round
+}
+
+.where.is-still {
+  height: auto;
+  padding: 104px 0 112px
+}
+
+.where.is-still .where__stage {
+  position: relative;
+  height: auto;
+  padding: 0
+}
+
+.where.is-still .where__place {
+  opacity: 1;
+  transform: none
+}
+
+@media (max-height: 600px) {
+  .where__stage {
+    padding: calc(10px + env(safe-area-inset-top)) 0 8px
+  }
+
+  .where__stage .t {
+    font-size: 46px
+  }
+
+  .where__stage .sub {
+    margin-top: 2px;
+    font-size: 15px
+  }
+
+  .where__row {
+    margin-top: 8px
+  }
+
+  .where__occasion {
+    font-size: 27px
+  }
+
+  .where__route {
+    min-height: 36px;
+    margin-top: 5px
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .where__place,
+  .where__figure img {
+    transition: none
+  }
+}

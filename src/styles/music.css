@@ -1,0 +1,58 @@
+/* ===== Background music: small floating glass sound button ===== */
+.sound {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top));
+  right: 14px;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 220, 174, .55);
+  background: rgba(26, 2, 7, .5);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff4ea;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(.8);
+  pointer-events: none;
+  transition: opacity .6s ease, transform .6s var(--spring)
+}
+
+.sound.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto
+}
+
+.sound:active {
+  transform: scale(.94)
+}
+
+.sound svg {
+  width: 20px;
+  height: 20px
+}
+
+.sound__wave {
+  animation: sound-wave 1.8s ease-in-out infinite
+}
+
+.sound__wave--2 {
+  animation-delay: .3s
+}
+
+@keyframes sound-wave {
+  50% {
+    opacity: .3
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .sound__wave {
+    animation: none
+  }
+}

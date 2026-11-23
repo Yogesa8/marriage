@@ -1,0 +1,336 @@
+/* ===== Splash: a sealed velvet envelope while the intro film loads ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(24px + env(safe-area-inset-top)) var(--pad) calc(24px + env(safe-area-inset-bottom));
+  background: var(--paper);
+  color: var(--ruby);
+  text-align: center;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: opacity 1s ease .9s, visibility 0s linear 1.9s
+}
+
+/* thin ruby frame, like the letter and the wish cards */
+.splash::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(143, 20, 38, .2);
+  pointer-events: none
+}
+
+.splash.is-ready {
+  cursor: pointer
+}
+
+.splash.is-opening {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none
+}
+
+/* the greeting above the title: "Dear Yogesh," */
+.splash__to {
+  max-width: 100%;
+  margin: 0 0 clamp(10px, 2svh, 16px);
+  font: italic 400 clamp(18px, 5vw, 22px)/1.3 var(--serif);
+  letter-spacing: .02em;
+  color: var(--ink);
+  opacity: .8;
+  overflow-wrap: anywhere;
+  animation: splash-in 1.2s var(--ease) both
+}
+
+.splash__t {
+  margin: 0;
+  font: 400 clamp(48px, 13.5vw, 68px)/.92 var(--script);
+  color: var(--ruby);
+  animation: splash-in 1.2s var(--ease) both
+}
+
+/* ----- envelope ----- */
+.splash__env {
+  position: relative;
+  width: min(76vw, 320px);
+  aspect-ratio: 1.45;
+  margin: clamp(34px, 6svh, 56px) 0 clamp(36px, 6svh, 54px);
+  animation: splash-in 1.2s var(--ease) .15s both
+}
+
+.splash__back,
+.splash__front,
+.splash__flap {
+  background: #5a0814 url(/assets/media/velvet.jpg) center/300px;
+  background-blend-mode: soft-light
+}
+
+.splash__back {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background-color: #3e0510;
+  box-shadow: 0 26px 40px -20px rgba(59, 7, 16, .7), inset 0 0 0 1px rgba(217, 180, 124, .35)
+}
+
+/* the card inside: rises out when the envelope opens */
+.splash__card {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 6%;
+  bottom: 8%;
+  z-index: 1;
+  display: grid;
+  place-items: start center;
+  padding-top: 9%;
+  background: var(--paper);
+  box-shadow: 0 2px 6px rgba(40, 0, 8, .3);
+  transition: transform 1.1s var(--ease) .45s
+}
+
+.splash__card::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(143, 20, 38, .2)
+}
+
+.splash__card span {
+  font: 400 11px/1 var(--disp);
+  letter-spacing: .45em;
+  padding-left: .45em;
+  color: var(--ruby)
+}
+
+/* front pocket: side and bottom flaps meet in the middle */
+.splash__front {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 4px;
+  background-color: #8a1226;
+  background-image: linear-gradient(180deg, rgba(255, 220, 200, .06), rgba(20, 0, 4, .25)), url(/assets/media/velvet.jpg);
+  background-size: auto, 300px;
+  clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%)
+}
+
+.splash__front svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%
+}
+
+.splash__front path {
+  fill: none;
+  stroke: rgba(243, 220, 174, .55);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke
+}
+
+/* top flap: opens upwards in 3D */
+.splash__flapw {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  perspective: 900px;
+  filter: drop-shadow(0 3px 3px rgba(20, 0, 4, .45));
+  transition: z-index 0s linear .4s
+}
+
+.splash__flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 58%;
+  background-color: #7a0f20;
+  background-image: linear-gradient(180deg, rgba(20, 0, 4, .2), rgba(255, 220, 200, .05)), url(/assets/media/velvet.jpg);
+  background-size: auto, 300px;
+  border-radius: 4px 4px 0 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: 50% 0;
+  transition: transform .9s cubic-bezier(.55, 0, .25, 1)
+}
+
+/* gold stitching along the flap edges */
+.splash__flap svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%
+}
+
+.splash__flap path {
+  fill: none;
+  stroke: rgba(243, 220, 174, .7);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke
+}
+
+/* gold wax seal on the tip of the flap */
+.splash__seal {
+  position: absolute;
+  left: 50%;
+  top: 57%;
+  z-index: 4;
+  width: 23%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 34% 28%, #fff4d8 0%, #e9c98f 22%, #c99a5b 52%, #8c5e2c 82%, #6e4720 100%);
+  box-shadow: 0 6px 10px -2px rgba(30, 0, 6, .55), inset 0 -2px 4px rgba(80, 45, 10, .45), inset 0 2px 3px rgba(255, 250, 235, .6);
+  transition: opacity .45s ease, transform .6s var(--ease)
+}
+
+.splash__seal::before {
+  content: "";
+  position: absolute;
+  inset: 13%;
+  border-radius: 50%;
+  border: 1px solid rgba(90, 55, 15, .45);
+  box-shadow: 0 1px 0 rgba(255, 245, 220, .5)
+}
+
+.splash__seal span {
+  font: 400 clamp(10px, 3vw, 13px)/1 var(--disp);
+  letter-spacing: .06em;
+  color: #5b3810;
+  text-shadow: 0 1px 0 rgba(255, 240, 210, .6);
+  white-space: nowrap
+}
+
+/* pearl strands resting on two corners of the envelope */
+.splash__pearls {
+  position: absolute;
+  z-index: 5;
+  width: 30%;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 5px rgba(40, 0, 8, .35));
+  transition: opacity .6s ease
+}
+
+.splash__pearls--tr {
+  right: -9%;
+  top: -16%;
+  transform: scaleX(-1) rotate(-6deg)
+}
+
+.splash__pearls--bl {
+  left: -9%;
+  bottom: -20%;
+  transform: scaleY(-1) rotate(-6deg)
+}
+
+/* ----- call to action + loading line ----- */
+.splash__cta {
+  margin: 0;
+  font: 400 14px/1.2 var(--disp);
+  letter-spacing: .3em;
+  padding-left: .3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  animation: splash-in 1.2s var(--ease) .3s both
+}
+
+.splash.is-ready .splash__cta {
+  animation: splash-in 1.2s var(--ease) .3s both, splash-pulse 2.4s ease-in-out 1.5s infinite
+}
+
+.splash__bar {
+  width: min(140px, 40vw);
+  height: 1px;
+  margin-top: 16px;
+  background: rgba(143, 20, 38, .15);
+  overflow: hidden;
+  transition: opacity .6s
+}
+
+.splash__bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--ruby));
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  transition: transform .4s ease
+}
+
+.splash.is-ready .splash__bar {
+  opacity: 0
+}
+
+/* ----- opening ----- */
+.splash.is-opening .splash__seal {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1.25)
+}
+
+.splash.is-opening .splash__flap {
+  transform: rotateX(180deg)
+}
+
+.splash.is-opening .splash__flapw {
+  z-index: 0
+}
+
+.splash.is-opening .splash__card {
+  transform: translateY(-42%)
+}
+
+.splash.is-opening .splash__pearls,
+.splash.is-opening .splash__cta {
+  opacity: 0;
+  transition: opacity .5s ease
+}
+
+@keyframes splash-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px)
+  }
+}
+
+@keyframes splash-pulse {
+  50% {
+    opacity: .45
+  }
+}
+
+/* phone in landscape: greeting, title, envelope and "Tap to open" all fit in ~390px */
+@media (max-height: 500px) and (orientation: landscape) {
+  .splash__to {
+    margin-bottom: 4px;
+    font-size: 16px
+  }
+
+  .splash__t {
+    font-size: clamp(34px, 10svh, 44px)
+  }
+
+  .splash__env {
+    width: calc(40svh * 1.45);
+    margin: 14px 0 14px
+  }
+
+  .splash__bar {
+    margin-top: 10px
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+
+  .splash,
+  .splash * {
+    animation: none !important;
+    transition: none !important
+  }
+}

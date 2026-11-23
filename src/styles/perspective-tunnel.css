@@ -1,0 +1,311 @@
+/* ===== Perspective tunnel: cards fly from far away towards the guest as the page scrolls =====
+   JS writes only --progress (0..1), --px and --py (-1..1). Everything below is computed in CSS. */
+
+.tunnel-section {
+  --progress: 0;
+  --px: 0;
+  --py: 0;
+  /* card flight depth and pointer parallax strength (smaller on phones) */
+  --tunnel-z-from: -1700px;
+  --tunnel-z-span: 2200px;
+  --tunnel-parallax: 45px;
+  --tunnel-card-w: clamp(180px, 18vw, 270px);
+  /* how much the centre text keeps growing after the middle (1 → 1 + grow / 2) */
+  --tunnel-text-grow: .7;
+  position: relative;
+  height: 300vh;
+  /* no background of its own: the page's night background shows through */
+  color: var(--pearl)
+}
+
+/* ----- pinned stage ----- */
+.tunnel-section__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d
+}
+
+/* the 3D space: centre text and cards share it, so close cards pass in front of the text */
+.tunnel-section__space {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none
+}
+
+/* ----- decoration ----- */
+.tunnel-section__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(217, 180, 124, .22) 1px, transparent 1.5px);
+  background-size: 28px 28px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(ellipse 60% 55% at 50% 50%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 55% at 50% 50%, #000 20%, transparent 75%);
+  pointer-events: none
+}
+
+.tunnel-section__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 70vmin;
+  height: 70vmin;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 180, 124, .12) 0%, rgba(143, 20, 38, .1) 35%, transparent 70%);
+  pointer-events: none
+}
+
+.tunnel-section__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none
+}
+
+.tunnel-section__ring--inner {
+  width: 48vmin;
+  height: 48vmin;
+  border: 1px solid rgba(217, 180, 124, .16)
+}
+
+.tunnel-section__ring--outer {
+  width: 76vmin;
+  height: 76vmin;
+  border: 1px dashed rgba(217, 180, 124, .11)
+}
+
+/* ----- centre text ----- */
+.tunnel-section__text {
+  /* scale: .7 at 0 → 1 at .5 → 1.35 at 1 */
+  --tunnel-text-scale: calc(.7 + min(var(--progress), .5) * .6 + max(0, var(--progress) - .5) * var(--tunnel-text-grow));
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(36rem, calc(100% - 2 * var(--pad)));
+  text-align: center;
+  transform: translate3d(-50%, -50%, 0) scale(var(--tunnel-text-scale));
+  /* opacity: .25 at 0 → 1 at .12, holds, → 0 at 1 */
+  opacity: min(calc(.25 + clamp(0, calc(var(--progress) / .12), 1) * .75), clamp(0, calc((1 - var(--progress)) / .15), 1));
+  will-change: transform, opacity
+}
+
+.tunnel-section__label {
+  font: 500 11px/1 var(--sans);
+  letter-spacing: .42em;
+  padding-left: .42em;
+  text-transform: uppercase;
+  color: var(--gold)
+}
+
+.tunnel-section__title {
+  margin: 18px 0 0;
+  font: 400 clamp(64px, 15vw, 128px)/.86 var(--script);
+  color: #fff6ee;
+  text-shadow: 0 0 24px rgba(255, 170, 150, .25), 0 6px 30px rgba(20, 0, 4, .7)
+}
+
+.tunnel-section__title span {
+  display: block
+}
+
+.tunnel-section__desc {
+  margin-top: 18px;
+  font: italic 400 18px/1.45 var(--serif);
+  opacity: .85
+}
+
+/* ----- "Scroll to explore" ----- */
+.tunnel-section__hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(28px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateX(-50%);
+  opacity: clamp(0, calc(1 - var(--progress) / .12), 1);
+  white-space: nowrap;
+  pointer-events: none
+}
+
+.tunnel-section__hint span {
+  font: 500 10.5px/1 var(--sans);
+  letter-spacing: .36em;
+  padding-left: .36em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  opacity: .85
+}
+
+.tunnel-section__hint i {
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(var(--gold), transparent)
+}
+
+/* ----- cards ----- */
+.tunnel-section__card {
+  /* this card's own flight window: progress [start, start + span] → local [0, 1] */
+  --tunnel-local: clamp(0, calc((var(--progress) - var(--start)) / var(--span)), 1);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--tunnel-card-w);
+  aspect-ratio: 4/5;
+  margin: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--cherry);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .85), 0 18px 36px -24px rgba(0, 0, 0, .7);
+  transform:
+    translate3d(calc(-50% + var(--x) - var(--px) * var(--tunnel-parallax)),
+      calc(-50% + var(--y) - var(--py) * var(--tunnel-parallax)),
+      calc(var(--tunnel-z-from) + var(--tunnel-local) * var(--tunnel-z-span))) rotateZ(var(--rot));
+  /* opacity: 0 at 0 → 1 at .18, holds until .82 → 0 at .98 */
+  opacity: min(clamp(0, calc(var(--tunnel-local) / .18), 1), clamp(0, calc((.98 - var(--tunnel-local)) / .16), 1));
+  will-change: transform;
+  pointer-events: auto
+}
+
+/* thin low-opacity ring */
+.tunnel-section__card::before,
+.tunnel-section__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  pointer-events: none
+}
+
+.tunnel-section__card::before {
+  box-shadow: inset 0 0 0 1px rgba(243, 220, 174, .16)
+}
+
+/* accent ring + glow on hover (fades in: only opacity animates) */
+.tunnel-section__card::after {
+  box-shadow: inset 0 0 0 1px var(--gold), inset 0 0 24px rgba(217, 180, 124, .35), 0 0 34px rgba(217, 180, 124, .4);
+  opacity: 0;
+  transition: opacity .5s ease
+}
+
+.tunnel-section__card:hover::after {
+  opacity: 1
+}
+
+.tunnel-section__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-user-drag: none;
+  user-select: none;
+  transition: transform .7s cubic-bezier(.16, 1, .3, 1)
+}
+
+.tunnel-section__card:hover .tunnel-section__img {
+  transform: scale(1.1)
+}
+
+/* dark gradient from the bottom with the title */
+.tunnel-section__caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 48px 14px 13px;
+  background: linear-gradient(to top, rgba(10, 0, 3, .8), rgba(10, 0, 3, .35) 55%, transparent);
+  font: 500 10px/1.3 var(--sans);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: left
+}
+
+/* ----- phones ----- */
+@media (max-width: 767px) {
+  .tunnel-section {
+    --tunnel-z-from: -1200px;
+    --tunnel-z-span: 1550px;
+    --tunnel-parallax: 20px;
+    --tunnel-card-w: clamp(130px, 38vw, 180px);
+    /* on narrow screens the text stops at 1.12× so the lines never reach the screen edges */
+    --tunnel-text-grow: .24;
+    height: 250vh
+  }
+
+  .tunnel-section__stage {
+    perspective: 900px
+  }
+
+  .tunnel-section__desc {
+    font-size: 16.5px
+  }
+
+  .tunnel-section__caption {
+    padding: 38px 11px 10px;
+    font-size: 9px;
+    letter-spacing: .2em
+  }
+}
+
+/* ----- short screens (phone in landscape): size everything by height ----- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .tunnel-section {
+    --tunnel-z-from: -1200px;
+    --tunnel-z-span: 1550px;
+    --tunnel-parallax: 20px;
+    --tunnel-card-w: clamp(100px, 26vh, 150px);
+    --tunnel-text-grow: .3;
+    height: 250vh
+  }
+
+  .tunnel-section__stage {
+    perspective: 900px
+  }
+
+  .tunnel-section__title {
+    margin-top: 10px;
+    font-size: clamp(42px, 13vh, 64px)
+  }
+
+  .tunnel-section__desc {
+    margin-top: 10px;
+    font-size: 15px
+  }
+
+  .tunnel-section__hint {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    gap: 8px
+  }
+
+  .tunnel-section__hint i {
+    height: 24px
+  }
+}
+
+/* reduced motion: no parallax and no smoothing (handled in JS); hover zoom off */
+@media (prefers-reduced-motion: reduce) {
+
+  .tunnel-section__img,
+  .tunnel-section__card::after {
+    transition: none
+  }
+
+  .tunnel-section__card:hover .tunnel-section__img {
+    transform: none
+  }
+}
