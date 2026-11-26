@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { COUPLE } from '../data/invite'
 import { asset, hasIO, prefersReducedMotion } from '../utils/helpers'
+import { NAMES, VARIANT_CFG } from '../utils/variant'
 
 /* 2 · Letter: a bordeaux lace envelope, the letter rises out of its pocket on scroll */
 export default function Letter({ guest }) {
@@ -77,17 +77,17 @@ export default function Letter({ guest }) {
       data-block-name="2 · Письмо из конверта"
     >
       <div className="wrap">
-        <div className="env" id="env" ref={envRef} aria-label="Two families, one celebration. We would love to have you with us as we begin our forever.">
+        <div className="env" id="env" ref={envRef} aria-label={VARIANT_CFG.letter}>
           <div className="env__back" />
           <article className="note" id="note" ref={noteRef}>
             <img className="note__pin" src={asset('assets/media/pearl-pin.webp')} alt="" aria-hidden="true" />
             <span className="note__hole" aria-hidden="true" />
             <h2 id="dear">{guest ? `Dear ${guest}` : 'Dear family & friends'}</h2>
             <p className="letter__txt" data-otl-message="" dir="auto">
-              Two families, one celebration. We would love to have you with us as we begin our forever.
+              {VARIANT_CFG.letter}
             </p>
             <p className="letter__sig">
-              {COUPLE.first} & {COUPLE.second}
+              {NAMES.first} & {NAMES.second}
             </p>
           </article>
           <div className="env__front" />

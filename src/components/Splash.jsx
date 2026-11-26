@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { COUPLE } from '../data/invite'
 import { asset, prefersReducedMotion } from '../utils/helpers'
+import { NAMES } from '../utils/variant'
 
 const PEARLS = asset('assets/media/pearls-strand.webp')
 /* how long the opening animation runs before the splash is removed */
@@ -61,7 +61,7 @@ export default function Splash({ ready, progress, guest, onOpen }) {
         <img className="splash__pearls splash__pearls--tr" src={PEARLS} alt="" />
         <div className="splash__back" />
         <div className="splash__card">
-          <span>{COUPLE.monogram}</span>
+          <span>{NAMES.monogram}</span>
         </div>
         <div className="splash__front">
           <svg viewBox="0 0 145 100" preserveAspectRatio="none">
@@ -76,7 +76,7 @@ export default function Splash({ ready, progress, guest, onOpen }) {
           </div>
         </div>
         <span className="splash__seal">
-          <span>{COUPLE.monogram}</span>
+          <span>{NAMES.monogram}</span>
         </span>
         <img className="splash__pearls splash__pearls--bl" src={PEARLS} alt="" />
       </div>

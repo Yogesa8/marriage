@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { EVENT } from "./data/invite";
+import { OCCASION_EVENT } from "./utils/occasion";
 import { asset, getGuestName } from "./utils/helpers";
+import { VARIANT_CFG } from "./utils/variant";
 import Music from "./components/Music";
 import useSmoothScroll from "./hooks/useSmoothScroll";
 import Splash from "./components/Splash";
@@ -76,11 +78,11 @@ export default function App() {
         <Celebrations />
         <Venue />
         <Wishes />
-        <PerspectiveTunnel />
+        {VARIANT_CFG.photos && <PerspectiveTunnel />}
         <Closing />
       </main>
       <small className="made">
-        {EVENT.title}
+        {OCCASION_EVENT.title}
         <br />
         {EVENT.phone.split(' / ').map((phone, i) => (
           <span key={phone}>

@@ -6,6 +6,58 @@
   padding: 0
 }
 
+.cel.is-single {
+  height: 100vh;
+  height: 100svh;
+}
+
+.cel.is-single .cel__stage {
+  position: relative;
+}
+
+.cel.is-single .cel__row {
+  grid-template-columns: minmax(0, 380px);
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.cel.is-single .cel__col {
+  text-align: center;
+  transform: none;
+}
+
+.cel.is-single .cel__head {
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.cel.is-single .cel__tl {
+  width: min(300px, 100%);
+  margin: 0 auto;
+  text-align: left;
+}
+
+.cel.is-single .cel__line {
+  left: 0;
+  right: auto;
+}
+
+.cel.is-single .cel__tl li {
+  padding-left: 16px;
+  padding-right: 0;
+}
+
+.cel.is-single .cel__tl li::before {
+  left: -3px;
+  right: auto;
+}
+
+.cel.is-single .cel__tx,
+.cel.is-single .cel__col--l .cel__tx,
+.cel.is-single .cel__col--r .cel__tx {
+  transform: none;
+}
+
 /* the section itself has no background: it is on the pinned stage below,
    so the paper stays still while scrolling and only the content reveals */
 .cel.s-pearl {
@@ -17,7 +69,7 @@
 }
 
 .cel__stage {
-  background: #f4e9e1 url(/assets/media/emboss.jpg) center/640px;
+  background: #f4e9e1 url(/assets/media/emboss.jpg?v=20261126) center/640px;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -349,6 +401,20 @@
   height: calc(100vh + 140vh);
   height: calc(100svh + 140svh);
   padding: 0
+}
+
+.where.is-single {
+  height: 100vh;
+  height: 100svh;
+}
+
+.where.is-single .where__stage {
+  position: relative;
+}
+
+.where.is-single .where__row {
+  grid-template-columns: minmax(0, 315px);
+  justify-content: center;
 }
 
 .where__stage {

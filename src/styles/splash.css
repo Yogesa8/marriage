@@ -67,7 +67,7 @@
 .splash__back,
 .splash__front,
 .splash__flap {
-  background: #5a0814 url(/assets/media/velvet.jpg) center/300px;
+  background: #5a0814 url(/assets/media/velvet.jpg?v=20261126) center/300px;
   background-blend-mode: soft-light
 }
 
@@ -116,7 +116,7 @@
   z-index: 2;
   border-radius: 4px;
   background-color: #8a1226;
-  background-image: linear-gradient(180deg, rgba(255, 220, 200, .06), rgba(20, 0, 4, .25)), url(/assets/media/velvet.jpg);
+  background-image: linear-gradient(180deg, rgba(255, 220, 200, .06), rgba(20, 0, 4, .25)), url(/assets/media/velvet.jpg?v=20261126);
   background-size: auto, 300px;
   clip-path: polygon(0 0, 50% 54%, 100% 0, 100% 100%, 0 100%)
 }
@@ -152,7 +152,7 @@
   top: 0;
   height: 58%;
   background-color: #7a0f20;
-  background-image: linear-gradient(180deg, rgba(20, 0, 4, .2), rgba(255, 220, 200, .05)), url(/assets/media/velvet.jpg);
+  background-image: linear-gradient(180deg, rgba(20, 0, 4, .2), rgba(255, 220, 200, .05)), url(/assets/media/velvet.jpg?v=20261126);
   background-size: auto, 300px;
   border-radius: 4px 4px 0 0;
   clip-path: polygon(0 0, 100% 0, 50% 100%);

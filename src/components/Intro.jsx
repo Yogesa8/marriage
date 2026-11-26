@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { COUPLE, EVENT, INVITE_NAMED_OPENING } from '../data/invite'
+import { COUPLE, INVITE_NAMED_OPENING } from '../data/invite'
 import { asset, buzz } from '../utils/helpers'
+import { OCCASION, OCCASION_EVENT as EVENT } from '../utils/occasion'
+import { NAMES, VARIANT_CFG } from '../utils/variant'
 
 /*
  * 0 · Intro: a wall of red glitter. The guest taps,
@@ -485,7 +487,7 @@ export default function Intro({ apiRef, guest, onOpen, onNamed, onReady, onProgr
     .filter(Boolean)
     .join(' ')
 
-  const names = `${COUPLE.first} & ${COUPLE.second}`
+  const names = `${NAMES.first} & ${NAMES.second}`
 
   return (
     <header
@@ -528,7 +530,7 @@ export default function Intro({ apiRef, guest, onOpen, onNamed, onReady, onProgr
         <p className="intro__for" id="introFor">
           {guest ? `${guest}, your invitation is under the glitter` : 'An invitation is hiding under the glitter'}
         </p>
-        <span className="intro__mono">{COUPLE.monogram}</span>
+        <span className="intro__mono">{NAMES.monogram}</span>
       </div>
       <div className="intro__hint">
         <p className="intro__tap">Tap the glitter</p>
@@ -537,15 +539,17 @@ export default function Intro({ apiRef, guest, onOpen, onNamed, onReady, onProgr
 
       <div className="hero" aria-live="polite">
         <p className="hero__tog" id="heroFor">
-          {guest ? `Dear ${guest},` : 'With the blessings of our families'}
+          {guest ? `Dear ${guest},` : VARIANT_CFG.introFor}
         </p>
         <h1 className="hero__names">
-          <span className="hero__n hero__n--1">{COUPLE.first}</span>
+          <span className="hero__n hero__n--1">{NAMES.first}</span>
           <span className="hero__amp">&</span>
-          <span className="hero__n hero__n--2">{COUPLE.second}</span>
+          <span className="hero__n hero__n--2">{NAMES.second}</span>
         </h1>
-        <p className="hero__inv">invite you to celebrate their wedding</p>
-        <p className="hero__date">{COUPLE.dateDots}</p>
+        <p className="hero__inv">
+          {OCCASION ? `invite you to celebrate their ${OCCASION}` : 'invite you to celebrate their wedding'}
+        </p>
+        <p className="hero__date">{EVENT.dateDots || COUPLE.dateDots}</p>
         <p className="hero__place">{EVENT.place}</p>
       </div>
       {fx.names && (

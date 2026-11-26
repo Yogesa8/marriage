@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { COUPLE, EVENT } from '../data/invite'
+import { OCCASION, OCCASION_EVENT as EVENT } from '../utils/occasion'
+import { NAMES } from '../utils/variant'
 import Reveal from './Reveal'
 
 const T_EVENT = new Date(EVENT.start + (EVENT.utcOffset || '')).getTime()
@@ -52,7 +53,7 @@ export default function Closing() {
             {left.over ? 'Thank you for celebrating with us' : 'Today is the day'}
           </Reveal>
         ) : (
-          <Reveal className="cd" role="timer" aria-label="Time until the wedding">
+          <Reveal className="cd" role="timer" aria-label={`Time until the ${OCCASION || 'wedding'}`}>
             {UNITS.map(([k, label], i) => (
               <div className="cd__u" key={k}>
                 {i > 0 && <i aria-hidden="true">:</i>}
@@ -67,9 +68,9 @@ export default function Closing() {
         <Reveal className="love">
           <p>With love,</p>
           <p className="s">
-            {COUPLE.first}
+            {NAMES.first}
             <em>&</em>
-            {COUPLE.second}
+            {NAMES.second}
           </p>
         </Reveal>
       </div>

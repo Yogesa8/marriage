@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { CELEBRATIONS } from '../data/invite'
 import { clamp, prefersReducedMotion } from '../utils/helpers'
+import { FILTERED_CELEBRATIONS as CELEBRATIONS, OCCASION } from '../utils/occasion'
 import Reveal from './Reveal'
 
 /*
@@ -12,10 +12,12 @@ import Reveal from './Reveal'
  */
 
 /* where each step happens within the section's scroll progress (0..1) */
-const STEPS = [
-  { appear: 0.04, thread: [0.12, 0.36] }, // left column
-  { appear: 0.48, thread: [0.56, 0.86] }, // right column
-]
+const STEPS = CELEBRATIONS.length === 1
+  ? [{ appear: 0.04, thread: [0.12, 0.92] }]
+  : [
+      { appear: 0.04, thread: [0.12, 0.36] }, // left column
+      { appear: 0.48, thread: [0.56, 0.86] }, // right column
+    ]
 
 /* same rule as the original timeline: a moment lights up as the thread reaches it */
 function litCount(v, n) {
@@ -34,6 +36,7 @@ export default function Celebrations() {
 
   useEffect(() => {
     const sec = secRef.current
+    const single = CELEBRATIONS.length === 1
     let ps = still ? 1 : 0 // smoothed progress
     let pt = ps // target progress
     let raf = 0
@@ -69,6 +72,11 @@ export default function Celebrations() {
       else {
         /* starts a little before the section pins, ends when it unpins */
         const r = sec.getBoundingClientRect()
+        if (single) {
+          pt = clamp((window.innerHeight - r.top) / window.innerHeight)
+          if (!raf) raf = requestAnimationFrame(draw)
+          return
+        }
         const lead = window.innerHeight * 0.2
         const span = r.height - window.innerHeight
         pt = clamp((lead - r.top) / Math.max(1, span + lead))
@@ -89,7 +97,11 @@ export default function Celebrations() {
   return (
     <section
       ref={secRef}
-      className={'sec s-pearl cel' + (still ? ' is-still' : '')}
+      className={
+        'sec s-pearl cel' +
+        (CELEBRATIONS.length === 1 ? ' is-single' : '') +
+        (still ? ' is-still' : '')
+      }
       data-block="plan"
       data-block-name="4 · Программа: помолвка и свадьба"
     >

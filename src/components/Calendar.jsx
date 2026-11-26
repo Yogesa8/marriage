@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { COUPLE, EVENT } from '../data/invite'
+import { COUPLE } from '../data/invite'
 import { addToCalendar } from '../utils/calendar'
 import { asset, buzz, clamp, prefersReducedMotion } from '../utils/helpers'
+import { OCCASION_EVENT as EVENT } from '../utils/occasion'
+import { NAMES } from '../utils/variant'
 import Reveal from './Reveal'
 
 /* 3 · Desk flip calendar: scrolling turns the months up to the wedding month, then the date gets circled */
@@ -127,7 +129,7 @@ export default function Calendar({ sectionRef }) {
           className={'desk' + (landed ? ' is-landed' : '')}
           id="desk"
           role="img"
-          aria-label={`Calendar for ${MONTHS[WM]} ${WY} with ${COUPLE.dateLong} circled`}
+          aria-label={`Calendar for ${MONTHS[WM]} ${WY} with ${EVENT.dateLong || COUPLE.dateLong} circled`}
         >
           <div className="desk__board" />
           <div id="pages">
@@ -155,14 +157,14 @@ export default function Calendar({ sectionRef }) {
             ))}
           </div>
           <div className="desk__head" aria-hidden="true">
-            {COUPLE.monogram}
+            {NAMES.monogram}
           </div>
           <img className="desk__pearls" src={asset('assets/media/pearls-strand.webp')} alt="" aria-hidden="true" />
         </div>
         <div className="dinfo">
           <p className="dinfo__d">
-            <b>{COUPLE.dateLong}</b>
-            {COUPLE.dateNote}
+            <b>{EVENT.dateLong || COUPLE.dateLong}</b>
+            {EVENT.dateNote || COUPLE.dateNote}
           </p>
           <button className="btn btn--gold" id="calAdd" type="button" onClick={() => addToCalendar(EVENT)}>
             Add to my calendar

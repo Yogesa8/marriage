@@ -1,7 +1,8 @@
 /* Small shared helpers (same behaviour as the original inline script) */
 
-/** Resolve a file from /public so it also works when the app is served from a sub-folder */
-export const asset = (path) => import.meta.env.BASE_URL + path
+/** Resolve and version a file from /public so deployed browsers fetch the latest asset. */
+export const ASSET_VERSION = '20261126'
+export const asset = (path) => `${import.meta.env.BASE_URL}${path}?v=${ASSET_VERSION}`
 
 export const clamp = (v) => Math.max(0, Math.min(1, v))
 

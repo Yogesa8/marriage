@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { VENUES } from '../data/invite'
 import { asset, clamp, prefersReducedMotion } from '../utils/helpers'
+import { FILTERED_VENUES as VENUES } from '../utils/occasion'
 import Reveal from './Reveal'
 
 const STEPS = [0.04, 0.52]
@@ -14,6 +14,7 @@ export default function Venue() {
 
   useEffect(() => {
     const sec = secRef.current
+    const single = VENUES.length === 1
     let ps = still ? 1 : 0
     let pt = ps
     let raf = 0
@@ -22,7 +23,7 @@ export default function Venue() {
     function draw() {
       ps += (pt - ps) * 0.12
       if (Math.abs(pt - ps) < 0.0005) ps = pt
-      const next = VENUES.map((_, i) => ps >= STEPS[i])
+      const next = VENUES.map((_, i) => ps >= (STEPS[i] || STEPS[0]))
       const key = JSON.stringify(next)
       if (key !== lastKey) {
         lastKey = key
@@ -35,6 +36,11 @@ export default function Venue() {
       if (still) pt = 1
       else {
         const r = sec.getBoundingClientRect()
+        if (single) {
+          pt = clamp((window.innerHeight - r.top) / window.innerHeight)
+          if (!raf) raf = requestAnimationFrame(draw)
+          return
+        }
         const lead = window.innerHeight * 0.2
         const span = sec.offsetHeight - window.innerHeight
         pt = clamp((lead - r.top) / Math.max(1, span + lead))
@@ -55,7 +61,11 @@ export default function Venue() {
   return (
     <section
       ref={secRef}
-      className={'sec s-night where' + (still ? ' is-still' : '')}
+      className={
+        'sec s-night where' +
+        (VENUES.length === 1 ? ' is-single' : '') +
+        (still ? ' is-still' : '')
+      }
       data-block="venue"
       data-block-name="5 · Место"
     >
