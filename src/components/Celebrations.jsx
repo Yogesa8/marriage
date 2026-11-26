@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { clamp, prefersReducedMotion } from '../utils/helpers'
-import { FILTERED_CELEBRATIONS as CELEBRATIONS, OCCASION } from '../utils/occasion'
+import { clamp, hasIO, prefersReducedMotion } from '../utils/helpers'
+import { CELEBRATION_NOTE, FILTERED_CELEBRATIONS as CELEBRATIONS } from '../utils/occasion'
 import Reveal from './Reveal'
 
 /*
- * 4 · Celebrations: the section pins while you scroll through it.
- *   1. left column (engagement) appears, its gold thread draws down and lights each moment
- *   2. right column (wedding) appears the same way
- * The background stays still while pinned; only the content reveals.
- * Then the page scrolls on to the next section as usual.
+ * 4 · Celebrations:
+ *   - 1 or 2 days (bride / single occasion): pins while scrolling and draws each thread by scroll progress
+ *   - 3+ days (/ and /?v=groom): flows naturally in chronological order (2x2 on wide screens, 1-col on mobile)
+ *     and reveals each day as it enters the viewport, plus the Baraat departure note below
  */
+
+const IS_MULTI = CELEBRATIONS.length > 2
 
 /* where each step happens within the section's scroll progress (0..1) */
 const STEPS = CELEBRATIONS.length === 1
@@ -26,7 +27,9 @@ function litCount(v, n) {
   return c
 }
 
-const INITIAL = { shown: CELEBRATIONS.map(() => false), lit: CELEBRATIONS.map(() => 0) }
+const INITIAL = IS_MULTI && (prefersReducedMotion() || !hasIO())
+  ? { shown: CELEBRATIONS.map(() => true), lit: CELEBRATIONS.map((c) => c.items.length) }
+  : { shown: CELEBRATIONS.map(() => false), lit: CELEBRATIONS.map(() => 0) }
 
 export default function Celebrations() {
   const secRef = useRef(null)
@@ -35,6 +38,48 @@ export default function Celebrations() {
   const [still] = useState(prefersReducedMotion)
 
   useEffect(() => {
+    if (IS_MULTI) {
+      if (still || !hasIO()) {
+        CELEBRATIONS.forEach((_, i) => {
+          const col = colRefs.current[i]
+          if (col) col.style.setProperty('--pl', '1')
+        })
+        return
+      }
+
+      const io = new IntersectionObserver(
+        (entries) => {
+          const hit = []
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            const idx = Number(entry.target.dataset.celIdx)
+            if (!Number.isNaN(idx)) hit.push(idx)
+            io.unobserve(entry.target)
+          })
+          if (!hit.length) return
+          hit.forEach((idx) => {
+            const col = colRefs.current[idx]
+            if (col) col.style.setProperty('--pl', '1')
+          })
+          setView((prev) => {
+            const shown = [...prev.shown]
+            const lit = [...prev.lit]
+            hit.forEach((idx) => {
+              shown[idx] = true
+              lit[idx] = CELEBRATIONS[idx].items.length
+            })
+            return { shown, lit }
+          })
+        },
+        { threshold: 0.18, rootMargin: '0px 0px -6% 0px' },
+      )
+
+      colRefs.current.forEach((el) => {
+        if (el) io.observe(el)
+      })
+      return () => io.disconnect()
+    }
+
     const sec = secRef.current
     const single = CELEBRATIONS.length === 1
     let ps = still ? 1 : 0 // smoothed progress
@@ -100,6 +145,7 @@ export default function Celebrations() {
       className={
         'sec s-pearl cel' +
         (CELEBRATIONS.length === 1 ? ' is-single' : '') +
+        (IS_MULTI ? ' is-multi' : '') +
         (still ? ' is-still' : '')
       }
       data-block="plan"
@@ -119,6 +165,7 @@ export default function Celebrations() {
             {CELEBRATIONS.map((c, i) => (
               <article
                 key={c.name}
+                data-cel-idx={i}
                 ref={(el) => {
                   colRefs.current[i] = el
                 }}
@@ -137,10 +184,14 @@ export default function Celebrations() {
                   </span>
                   <ol>
                     {c.items.map((it, k) => (
-                      <li key={it.time + it.title} className={k < view.lit[i] ? 'is-lit' : undefined}>
+                      <li
+                        key={it.time + it.title}
+                        className={k < view.lit[i] ? 'is-lit' : undefined}
+                        style={IS_MULTI ? { '--d': `${180 + k * 140}ms` } : undefined}
+                      >
                         <div className="cel__tx">
                           <b>{it.title}</b>
-                          <time>{it.time}</time>
+                          {it.time && <time>{it.time}</time>}
                           <span>{it.text}</span>
                         </div>
                       </li>
@@ -150,6 +201,13 @@ export default function Celebrations() {
               </article>
             ))}
           </div>
+
+          {CELEBRATION_NOTE && (
+            <Reveal as="aside" className="cel__note" aria-label={CELEBRATION_NOTE.title}>
+              <h3>{CELEBRATION_NOTE.title}</h3>
+              <p>{CELEBRATION_NOTE.text}</p>
+            </Reveal>
+          )}
         </div>
       </div>
       <span className="lace lace--bot" aria-hidden="true" />

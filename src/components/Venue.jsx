@@ -102,6 +102,7 @@ export default function Venue() {
                     </div>
                   </figure>
                   <h4 className="where__name">{venue.name}</h4>
+                  {venue.detail && <p className="where__detail">{venue.detail}</p>}
                   <a
                     className="btn btn--gold where__route"
                     href={route}

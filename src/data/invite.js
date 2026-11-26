@@ -10,6 +10,7 @@ export const EVENT = {
   utcOffset: '+05:30',
   title: 'Aditi & Harsh · 2 February 2027 ',
   phone: '+91 7906838061 / +91 8004369347',
+  bridePhone: '+91 95746 99359',
   /* shown under the names on the intro and used as the calendar location */
   place: 'Shipra Lawn, Gorakhpur',
   /* what Google Maps searches for: the map and "Get directions" */
@@ -51,14 +52,14 @@ export const VARIANTS = {
   bride: {
     lead: 'bride',
     photos: true,
-    introFor: `With the blessings of ${COUPLE.bride}'s family`,
-    letter: `With the blessings of ${COUPLE.bride}'s family, we would love to have you with us as ${COUPLE.bride} and ${COUPLE.groom} begin their forever.`,
+    introFor: 'With the blessings of our family',
+    letter: `With the blessings of our family, we would love to have you with us as ${COUPLE.bride} and ${COUPLE.groom} begin their forever.`,
   },
   groom: {
     lead: 'groom',
     photos: true,
-    introFor: `With the blessings of ${COUPLE.groom}'s family`,
-    letter: `With the blessings of ${COUPLE.groom}'s family, we would love to have you with us as ${COUPLE.groom} and ${COUPLE.bride} begin their forever.`,
+    introFor: 'With the blessings of our family',
+    letter: `With the blessings of our family, we would love to have you with us as ${COUPLE.groom} and ${COUPLE.bride} begin their forever.`,
   },
   family: {
     lead: null,
@@ -68,15 +69,17 @@ export const VARIANTS = {
   },
 }
 
-/* 4 · Celebrations: engagement on the left, the wedding on the right */
+/* 4 · Celebrations: bride-side default (engagement on the left, wedding on the right) */
 export const CELEBRATIONS = [
   {
+    occasionKey: 'engagement',
     name: 'Engagement',
     weekday: 'Friday',
     date: '29 · 01 · 2027',
     items: [{ title: 'Ring ceremony', time: '4 PM onwards', text: 'Two rings, one promise' }],
   },
   {
+    occasionKey: 'wedding',
     name: 'Wedding',
     weekday: 'Tuesday',
     date: '02 · 02 · 2027',
@@ -87,13 +90,84 @@ export const CELEBRATIONS = [
   },
 ]
 
+/* Extended wedding functions shown on / (family) and /?v=groom */
+export const GROOM_CELEBRATIONS = [
+  {
+    occasionKey: 'engagement',
+    name: 'Engagement & Tilak',
+    weekday: 'Friday',
+    date: '29 · 01 · 2027',
+    items: [
+      {
+        title: 'Ring Ceremony & Shubh Tilak',
+        time: '4 PM onwards',
+        text: 'Hotel Bobina, Nepal Road, Jatashankar, Gorakhpur',
+      },
+    ],
+  },
+  {
+    occasionKey: 'haldi',
+    name: 'Shubh Haldi',
+    weekday: 'Sunday',
+    date: '31 · 01 · 2027',
+    items: [
+      {
+        title: 'Haldi Ceremony',
+        time: 'At our residence',
+        text: 'Humayunpur North, near Gangesh Hotel & Saraswati Vidya Mandir School, Gorakhpur',
+      },
+    ],
+  },
+  {
+    occasionKey: 'wedding',
+    name: 'Wedding & Preetibhoj',
+    weekday: 'Tuesday',
+    date: '02 · 02 · 2027',
+    items: [
+      {
+        title: 'Baraat Departure',
+        time: '6 PM',
+        text: 'Departs from our residence (Humayunpur North) by private conveyance for Shipra Lawn',
+      },
+      {
+        title: 'Welcome',
+        time: '7 PM',
+        text: 'Warm hugs and blessings at Shipra Lawn, Nepal Road, Gorakhpur',
+      },
+      {
+        title: 'Preetibhoj (Dinner)',
+        time: 'Around 9 PM',
+        text: 'Good food, music and dancing',
+      },
+    ],
+  },
+  {
+    occasionKey: 'vidai',
+    name: 'Milan & Vidai',
+    weekday: 'Wednesday',
+    date: '03 · 02 · 2027',
+    items: [
+      {
+        title: 'Blessings & Farewell',
+        time: '',
+        text: 'A warm send-off and new beginnings',
+      },
+    ],
+  },
+]
+
+export const GROOM_CELEBRATION_NOTE = {
+  title: 'Baraat Departure',
+  text: 'The Baraat will depart at 6:00 PM from our residence at Humayunpur North (near Gangesh Hotel & Saraswati Vidya Mandir School), Gorakhpur by private conveyance for "Shipra Lawn", Nepal Road, Gorakhpur.',
+}
+
 export const OCCASIONS = {
   engagement: {
     start: '2027-01-29T16:00:00',
     end: '2027-01-29T22:00:00',
     title: 'Aditi & Harsh · Engagement · 29 January 2027',
     place: 'Hotel Bobina, Gorakhpur',
-    map: 'Hotel Bobina, Gorakhpur',
+    map: 'Hotel Bobina, Nepal Road, Jatashankar, Gorakhpur',
     dateDots: '29 01 2027',
     dateLong: 'Friday, 29 January 2027',
     dateNote: 'ring ceremony at 4 PM onwards',
@@ -105,7 +179,7 @@ export const OCCASIONS = {
     end: '2027-02-02T22:00:00',
     title: 'Aditi & Harsh · Wedding · 2 February 2027',
     place: 'Shipra Lawn, Gorakhpur',
-    map: 'Shipra Lawn, Gorakhpur',
+    map: 'Shipra Lawn, Nepal Road, Gorakhpur',
     dateDots: '02 02 2027',
     dateLong: 'Tuesday, 2 February 2027',
     dateNote: 'welcome at 7 PM, dinner around 9 PM',
@@ -114,17 +188,53 @@ export const OCCASIONS = {
   },
 }
 
+export const GROOM_EVENT_OVERRIDES = {
+  default: {
+    dateNote: 'Baraat at 6 PM, welcome at 7 PM, dinner around 9 PM',
+  },
+  engagement: {
+    title: 'Aditi & Harsh · Engagement & Tilak · 29 January 2027',
+    place: 'Hotel Bobina, Nepal Road, Jatashankar, Gorakhpur',
+    dateNote: 'ring ceremony & Shubh Tilak from 4 PM onwards',
+  },
+  wedding: {
+    place: 'Shipra Lawn, Nepal Road, Gorakhpur',
+    dateNote: 'Baraat at 6 PM, welcome at 7 PM, dinner around 9 PM',
+  },
+}
+
 export const VENUES = [
   {
+    occasionKey: 'engagement',
     occasion: 'Engagement',
     name: 'Hotel Bobina, Gorakhpur',
     address: 'Hotel Bobina, Gorakhpur',
     image: 'assets/media/hotel-bobina.jpeg',
   },
   {
+    occasionKey: 'wedding',
     occasion: 'Wedding',
     name: COUPLE.venue,
     address: COUPLE.address,
+    image: 'assets/media/shipra.jpg',
+  },
+]
+
+export const GROOM_VENUES = [
+  {
+    occasionKey: 'engagement',
+    occasion: 'Engagement & Tilak',
+    name: 'Hotel Bobina',
+    detail: 'Nepal Road, Jatashankar, Gorakhpur',
+    address: 'Hotel Bobina, Nepal Road, Jatashankar, Gorakhpur',
+    image: 'assets/media/hotel-bobina.jpeg',
+  },
+  {
+    occasionKey: 'wedding',
+    occasion: 'Wedding & Preetibhoj',
+    name: 'Shipra Lawn',
+    detail: 'Nepal Road, Gorakhpur',
+    address: 'Shipra Lawn, Nepal Road, Gorakhpur',
     image: 'assets/media/shipra.jpg',
   },
 ]

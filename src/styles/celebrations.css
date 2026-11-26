@@ -58,6 +58,124 @@
   transform: none;
 }
 
+/* multi-function layout (/ and /?v=groom): flows naturally without vertical clipping */
+.cel.is-multi {
+  height: auto;
+  padding: 0;
+}
+
+.cel.is-multi .cel__stage {
+  position: relative;
+  top: auto;
+  height: auto;
+  min-height: 100svh;
+  padding: 96px 0 104px;
+}
+
+.cel.is-multi .wrap {
+  max-width: min(820px, 100%);
+}
+
+.cel.is-multi .cel__row {
+  grid-template-columns: 1fr;
+  row-gap: 32px;
+  margin-top: 34px;
+}
+
+.cel.is-multi .cel__col {
+  text-align: left;
+  transform: translateY(18px);
+}
+
+.cel.is-multi .cel__col.is-in {
+  transform: none;
+}
+
+.cel.is-multi .cel__head {
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.cel.is-multi .cel__name {
+  white-space: normal;
+  font-size: clamp(34px, 8.5vw, 44px);
+  line-height: 1.02;
+  clip-path: inset(-30% 100% -50% 0);
+}
+
+.cel.is-multi .cel__col.is-in .cel__name {
+  clip-path: inset(-30% -10% -50% -10%);
+}
+
+.cel.is-multi .cel__line {
+  left: 0;
+  right: auto;
+}
+
+.cel.is-multi .cel__line i {
+  transition: transform .9s var(--ease) .25s;
+}
+
+.cel.is-multi .cel__tl li {
+  padding: 12px 0 10px 18px;
+}
+
+.cel.is-multi .cel__tl li::before {
+  left: -3px;
+  right: auto;
+  top: 26px;
+  transition-delay: var(--d, 0ms);
+}
+
+.cel.is-multi .cel__tx {
+  transform: translateX(8px);
+  transition: opacity .6s var(--d, 0ms), transform .8s var(--ease) var(--d, 0ms);
+}
+
+.cel.is-multi .cel__tl li.is-lit .cel__tx {
+  transform: none;
+}
+
+.cel__note {
+  position: relative;
+  max-width: 620px;
+  margin: 40px auto 0;
+  padding: 26px 24px 24px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: center;
+  border-radius: 2px;
+  box-shadow: 0 20px 34px -24px rgba(59, 7, 16, .5), 0 1px 2px rgba(59, 7, 16, .08);
+}
+
+.cel__note::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(143, 20, 38, .18);
+  pointer-events: none;
+}
+
+.cel__note h3 {
+  margin: 0;
+  font: 400 clamp(32px, 8vw, 40px)/1 var(--script);
+  color: var(--ruby);
+}
+
+.cel__note p {
+  margin-top: 8px;
+  font: 400 16.5px/1.55 var(--serif);
+}
+
+@media (min-width: 720px) {
+  .cel.is-multi .cel__row {
+    grid-template-columns: 1fr 1fr;
+    column-gap: clamp(36px, 5vw, 64px);
+    row-gap: 40px;
+    margin-top: 42px;
+  }
+}
+
 /* the section itself has no background: it is on the pinned stage below,
    so the paper stays still while scrolling and only the content reveals */
 .cel.s-pearl {
@@ -507,6 +625,12 @@
   color: var(--gold2)
 }
 
+.where__detail {
+  margin: 4px 0 0;
+  font: italic 400 clamp(13px, 2vw, 15.5px)/1.35 var(--serif);
+  color: rgba(247, 238, 230, .82);
+}
+
 .where__route {
   width: 100%;
   min-height: 42px;
@@ -564,6 +688,11 @@
 
   .where__occasion {
     font-size: 27px
+  }
+
+  .where__detail {
+    margin-top: 2px;
+    font-size: 12.5px
   }
 
   .where__route {

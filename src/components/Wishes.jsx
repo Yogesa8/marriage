@@ -1,5 +1,15 @@
 import { WISHES } from '../data/invite'
+import { OCCASION_EVENT } from '../utils/occasion'
 import Reveal from './Reveal'
+
+function renderPhoneLinks(phoneStr) {
+  return phoneStr.split(' / ').map((phone, i) => (
+    <span key={phone}>
+      {i > 0 && ' / '}
+      <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
+    </span>
+  ))
+}
 
 /* 7 · A few wishes: paper cards */
 export default function Wishes() {
@@ -15,7 +25,9 @@ export default function Wishes() {
             <Reveal as="article" className="wcard" key={w.title}>
               <h3>{w.title}</h3>
               <p data-otl-detail="" dir="auto">
-                {w.text}
+                {w.title === 'Contact' && OCCASION_EVENT.phone
+                  ? renderPhoneLinks(OCCASION_EVENT.phone)
+                  : w.text}
               </p>
             </Reveal>
           ))}

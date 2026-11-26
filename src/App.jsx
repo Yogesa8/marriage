@@ -84,7 +84,7 @@ export default function App() {
       <small className="made">
         {OCCASION_EVENT.title}
         <br />
-        {EVENT.phone.split(' / ').map((phone, i) => (
+        {OCCASION_EVENT.phone.split(' / ').map((phone, i) => (
           <span key={phone}>
             {i > 0 && ' / '}
             <a href={`tel:${phone.replace(/[^\d+]/g, '')}`}>{phone}</a>
